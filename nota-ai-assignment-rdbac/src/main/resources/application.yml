@@ -4,6 +4,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: joonhee
     password: 1234
+
+logging:
+  level:
+    root: DEBUG
+
   jpa:
     hibernate:
       ddl-auto: validate
@@ -11,3 +16,4 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+
