@@ -27,4 +27,5 @@ class CustomUserDetails(
 data class CustomUserDto(
     val userId: Long,
     val role: String,
+    val tenantKey: String,
 )

@@ -31,7 +31,11 @@ class JwtAuthenticationFilter(
                 val tokenResult: AccountJwtPayload = jwtTokenProvider.parseAuthorizationToken(token)
 
                 val userDetails: UserDetails =
-                    CustomUserDetails(CustomUserDto(userId= tokenResult.userId, role = tokenResult.role))
+                    CustomUserDetails(CustomUserDto(
+                        userId= tokenResult.userId,
+                        role = tokenResult.role,
+                        tenantKey = tokenResult.tenantKey
+                    ))
 
                 if (userDetails != null) {
                     val usernamePasswordAuthenticationToken =
