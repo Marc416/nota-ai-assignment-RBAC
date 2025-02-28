@@ -1,7 +1,11 @@
 package com.notaaiassignmentrdbac.application.controller
 
 import com.notaaiassignmentrdbac.application.common.httpresponse.HttpApiResponse
+import com.notaaiassignmentrdbac.application.controller.dto.request.AccountSignInRequest
+import com.notaaiassignmentrdbac.application.controller.dto.request.AccountSignupRequest
 import com.notaaiassignmentrdbac.application.controller.dto.request.VerifyEmailRequest
+import com.notaaiassignmentrdbac.application.controller.dto.response.AccountSignInSuccessResponse
+import com.notaaiassignmentrdbac.domain.account.service.AccountCommandUseCase
 import com.notaaiassignmentrdbac.domain.account.service.EmailVerifyUseCase
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -11,16 +15,31 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/account")
 class AccountCommandController(
-    private val emailVerifyUseCase: EmailVerifyUseCase
+    private val emailVerifyUseCase: EmailVerifyUseCase,
+    private val accountCommandUseCase: AccountCommandUseCase,
 ) {
     @PostMapping("/signup")
-    fun signUp() {
-
+    fun signUp(
+        @RequestBody requestBody: AccountSignupRequest
+    ) {
+        accountCommandUseCase.signUp(
+            email = requestBody.email,
+            password = requestBody.password,
+            tenantKey = requestBody.tenantKey,
+            role = requestBody.role
+        )
     }
 
     @PostMapping("/signin")
-    fun signIn() {
-
+    fun signIn(
+        @RequestBody requestBody: AccountSignInRequest
+    ) :HttpApiResponse<AccountSignInSuccessResponse>{
+        val response = accountCommandUseCase.signIn(
+            email = requestBody.email,
+            password = requestBody.password,
+            tenantKey = requestBody.tenantKey
+        )
+        return HttpApiResponse.of(response)
     }
 
     /**

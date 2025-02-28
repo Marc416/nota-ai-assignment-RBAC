@@ -18,6 +18,7 @@ data class HttpApiResponse<T>(
         fun <T> of(data: T): HttpApiResponse<T> {
             return HttpApiResponse(
                 code = CodeEnum.RS_000,
+                message = CodeEnum.RS_000.description,
                 data = data
             )
         }
