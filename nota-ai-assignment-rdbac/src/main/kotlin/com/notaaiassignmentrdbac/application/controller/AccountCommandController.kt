@@ -3,6 +3,7 @@ package com.notaaiassignmentrdbac.application.controller
 import com.notaaiassignmentrdbac.application.common.httpresponse.HttpApiResponse
 import com.notaaiassignmentrdbac.application.controller.dto.request.AccountSignInRequest
 import com.notaaiassignmentrdbac.application.controller.dto.request.AccountSignupRequest
+import com.notaaiassignmentrdbac.application.controller.dto.request.ChangePasswordRequest
 import com.notaaiassignmentrdbac.application.controller.dto.request.VerifyEmailRequest
 import com.notaaiassignmentrdbac.application.controller.dto.response.AccountSignInSuccessResponse
 import com.notaaiassignmentrdbac.domain.account.service.AccountCommandUseCase
@@ -33,7 +34,7 @@ class AccountCommandController(
     @PostMapping("/signin")
     fun signIn(
         @RequestBody requestBody: AccountSignInRequest
-    ) :HttpApiResponse<AccountSignInSuccessResponse>{
+    ): HttpApiResponse<AccountSignInSuccessResponse> {
         val response = accountCommandUseCase.signIn(
             email = requestBody.email,
             password = requestBody.password,
@@ -68,7 +69,10 @@ class AccountCommandController(
      * 비밀번호 변경
      */
     @PostMapping("/password/change")
-    fun changePassword() {
-
+    fun changePassword(
+        @RequestBody request: ChangePasswordRequest,
+    ): HttpApiResponse<Unit> {
+        accountCommandUseCase.changePassword(1L, request.newPassword)
+        return HttpApiResponse.ok()
     }
 }

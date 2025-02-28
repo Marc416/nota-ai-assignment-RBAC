@@ -25,14 +25,16 @@ class AccountCommandService(
         return AccountSignupSuccessResponse(createdAccount.id, createdAccount.createdAt)
     }
 
-    override fun signIn(email: String, password: String, tenantKey: String): AccountSignInSuccessResponse {
+    override fun signIn(email: String, tenantKey: String, password: String): AccountSignInSuccessResponse {
         val account = accountRepository.findByEmailAndTenantKeyAndPassword(email, password, tenantKey)
         val accountPayload = AccountJwtPayload(account.id, account.role.name).toMap()
         val token = jwtTokenProvider.generateToken(accountPayload, 3000000)
         return AccountSignInSuccessResponse(token)
     }
 
-    override fun changePassword() {
-        TODO("Not yet implemented")
+    override fun changePassword(userId:Long, newPassword: String) {
+        val account = accountRepository.findByUserId(userId)
+        account.changePassword(newPassword)
+        accountRepository.save(account)
     }
 }

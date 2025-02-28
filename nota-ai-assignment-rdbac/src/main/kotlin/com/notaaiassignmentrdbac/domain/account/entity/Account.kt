@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 @Entity
 class Account(
     val email: String,
-    val password: String,
+    password: String,
     val tenantKey: String,
     @Enumerated(EnumType.STRING)
     val role: Role,
@@ -17,6 +17,8 @@ class Account(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L
+    var password: String = password
+        private set
 
     var deletedAt: LocalDateTime? = null
 
@@ -24,5 +26,9 @@ class Account(
         fun createActiveAccount(email: String, password: String, tenantKey: String, role: Role): Account {
             return Account(email, password, tenantKey, role, Status.ACTIVE)
         }
+    }
+
+    fun changePassword(newPassword: String) {
+        password = newPassword
     }
 }

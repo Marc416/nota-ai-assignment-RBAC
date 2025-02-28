@@ -5,7 +5,6 @@ import com.notaaiassignmentrdbac.application.controller.dto.response.AccountSign
 import com.notaaiassignmentrdbac.domain.account.entity.Role
 
 interface AccountCommandUseCase {
-    fun changePassword()
 
     fun signUp(
         email: String,
@@ -15,4 +14,5 @@ interface AccountCommandUseCase {
     ): AccountSignupSuccessResponse
 
     fun signIn(email: String, password: String, tenantKey: String): AccountSignInSuccessResponse
+    fun changePassword(userId: Long, newPassword: String)
 }

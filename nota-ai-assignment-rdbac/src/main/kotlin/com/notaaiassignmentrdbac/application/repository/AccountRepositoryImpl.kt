@@ -15,7 +15,17 @@ class AccountRepositoryImpl(
         return repository.save(account)
     }
 
-    override fun findByEmailAndTenantKeyAndPassword(email: String, password: String, tenantKey: String): Account {
+    override fun findByUserId(userId: Long): Account {
+        return repository.findById(userId)
+            .orElseThrow {
+                ApplicationException(
+                    code = CodeEnum.FRS_001,
+                    message = "없는 유저 입니다."
+                )
+            }
+    }
+
+    override fun findByEmailAndTenantKeyAndPassword(email: String, tenantKey: String, password: String): Account {
         return repository.findByEmailAndTenantKeyAndPassword(
             email = email,
             tenantKey = tenantKey,
