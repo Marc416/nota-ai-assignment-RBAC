@@ -10,10 +10,7 @@ import com.notaaiassignmentrdbac.application.controller.dto.response.AccountSign
 import com.notaaiassignmentrdbac.domain.account.service.AccountCommandUseCase
 import com.notaaiassignmentrdbac.domain.account.service.EmailVerifyUseCase
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/account")
@@ -70,7 +67,7 @@ class AccountCommandController(
     /**
      * 비밀번호 변경
      */
-    @PostMapping("/password/change")
+    @PatchMapping("/password")
     fun changePassword(
         @RequestBody request: ChangePasswordRequest,
         @AuthenticationPrincipal userDetails: CustomUserDetails,
