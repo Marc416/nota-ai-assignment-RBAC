@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 class SecurityConfig(
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
 ) {
 
     @Bean
@@ -34,12 +35,16 @@ class SecurityConfig(
         http.formLogin { form: FormLoginConfigurer<HttpSecurity> -> form.disable() }
         http.httpBasic { obj: HttpBasicConfigurer<HttpSecurity> -> obj.disable() }
 
-
+        http.addFilterBefore(
+            jwtAuthenticationFilter,
+            UsernamePasswordAuthenticationFilter::class.java
+        )
 
 
         // 권한 규칙 작성
-        http.authorizeHttpRequests { authz ->
-            authz.anyRequest().permitAll()
+        http.authorizeHttpRequests { httpRequest ->
+            httpRequest.requestMatchers("/account/password/*").authenticated()
+            httpRequest.anyRequest().permitAll()
         }
         return http.build()
     }

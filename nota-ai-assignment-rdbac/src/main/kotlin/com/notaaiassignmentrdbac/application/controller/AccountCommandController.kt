@@ -1,6 +1,7 @@
 package com.notaaiassignmentrdbac.application.controller
 
 import com.notaaiassignmentrdbac.application.common.httpresponse.HttpApiResponse
+import com.notaaiassignmentrdbac.application.config.security.CustomUserDetails
 import com.notaaiassignmentrdbac.application.controller.dto.request.AccountSignInRequest
 import com.notaaiassignmentrdbac.application.controller.dto.request.AccountSignupRequest
 import com.notaaiassignmentrdbac.application.controller.dto.request.ChangePasswordRequest
@@ -8,6 +9,7 @@ import com.notaaiassignmentrdbac.application.controller.dto.request.VerifyEmailR
 import com.notaaiassignmentrdbac.application.controller.dto.response.AccountSignInSuccessResponse
 import com.notaaiassignmentrdbac.domain.account.service.AccountCommandUseCase
 import com.notaaiassignmentrdbac.domain.account.service.EmailVerifyUseCase
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -71,8 +73,9 @@ class AccountCommandController(
     @PostMapping("/password/change")
     fun changePassword(
         @RequestBody request: ChangePasswordRequest,
+        @AuthenticationPrincipal userDetails: CustomUserDetails,
     ): HttpApiResponse<Unit> {
-        accountCommandUseCase.changePassword(1L, request.newPassword)
+        accountCommandUseCase.changePassword(userDetails.user.userId, request.newPassword)
         return HttpApiResponse.ok()
     }
 }
