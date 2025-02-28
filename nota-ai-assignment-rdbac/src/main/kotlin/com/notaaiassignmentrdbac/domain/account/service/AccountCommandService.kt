@@ -28,7 +28,7 @@ class AccountCommandService(
     override fun signIn(email: String, tenantKey: String, password: String): AccountSignInSuccessResponse {
         val account = accountRepository.findByEmailAndTenantKeyAndPassword(email, password, tenantKey)
         val accountPayload = AccountJwtPayload(
-            userId = account.id,
+            accountId = account.id,
             tenantKey = account.tenantKey,
             role = account.role.name
         ).toMap()
@@ -36,14 +36,14 @@ class AccountCommandService(
         return AccountSignInSuccessResponse(token)
     }
 
-    override fun changePassword(userId: Long, newPassword: String) {
-        val account = accountRepository.findByUserId(userId)
+    override fun changePassword(accountId: Long, newPassword: String) {
+        val account = accountRepository.findByAccountId(accountId)
         account.changePassword(newPassword)
         accountRepository.save(account)
     }
 
-    override fun deleteAccount(userId: Long) {
-        val account = accountRepository.findByUserId(userId)
+    override fun deleteAccount(accountId: Long) {
+        val account = accountRepository.findByAccountId(accountId)
         account.delete()
         accountRepository.save(account)
     }

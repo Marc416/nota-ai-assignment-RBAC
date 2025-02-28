@@ -32,7 +32,7 @@ class JwtAuthenticationFilter(
 
                 val userDetails: UserDetails =
                     CustomUserDetails(CustomUserDto(
-                        userId= tokenResult.userId,
+                        accountId= tokenResult.accountId,
                         role = tokenResult.role,
                         tenantKey = tokenResult.tenantKey
                     ))

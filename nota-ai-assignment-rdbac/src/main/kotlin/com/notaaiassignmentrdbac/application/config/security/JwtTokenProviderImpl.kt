@@ -28,11 +28,11 @@ class JwtTokenProviderImpl(
 
     override fun parseAuthorizationToken(token: String): AccountJwtPayload {
         val decodedJWT = verifyToken(token)
-        val userId = decodedJWT.getClaim("userId").asLong()
+        val accountId = decodedJWT.getClaim("accountId").asLong()
         val tenantKey = decodedJWT.getClaim("tenantKey").asString()
         val role = decodedJWT.getClaim("role").asString()
         return AccountJwtPayload(
-            userId= userId,
+            accountId= accountId,
             tenantKey = tenantKey,
             role=role
         )

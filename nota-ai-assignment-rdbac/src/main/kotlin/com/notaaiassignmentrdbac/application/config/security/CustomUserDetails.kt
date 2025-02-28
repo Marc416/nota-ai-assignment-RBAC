@@ -18,14 +18,14 @@ class CustomUserDetails(
     }
 
     override fun getUsername(): String {
-        return user.userId.toString()
+        return user.accountId.toString()
     }
 
 
 }
 
 data class CustomUserDto(
-    val userId: Long,
+    val accountId: Long,
     val role: String,
     val tenantKey: String,
 )

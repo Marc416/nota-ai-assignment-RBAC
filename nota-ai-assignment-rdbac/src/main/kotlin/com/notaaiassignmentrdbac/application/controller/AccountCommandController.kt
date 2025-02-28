@@ -71,16 +71,16 @@ class AccountCommandController(
         @RequestBody request: ChangePasswordRequest,
         @AuthenticationPrincipal userDetails: CustomUserDetails,
     ): HttpApiResponse<Unit> {
-        accountCommandUseCase.changePassword(userDetails.user.userId, request.newPassword)
+        accountCommandUseCase.changePassword(userDetails.user.accountId, request.newPassword)
         return HttpApiResponse.ok()
     }
 
     @CheckRole(Role.ADMIN)
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/{accountId}")
     fun deleteAccount(
-        @PathVariable userId: Long,
+        @PathVariable accountId: Long,
     ): HttpApiResponse<Unit> {
-        accountCommandUseCase.deleteAccount(userId)
+        accountCommandUseCase.deleteAccount(accountId)
         return HttpApiResponse.ok()
     }
 }
