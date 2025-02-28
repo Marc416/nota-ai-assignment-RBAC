@@ -1,6 +1,7 @@
 package com.notaaiassignmentrdbac.application.config.security
 
 import com.notaaiassignmentrdbac.domain.account.dto.AccountJwtPayload
+import com.notaaiassignmentrdbac.domain.account.entity.Role
 import com.notaaiassignmentrdbac.domain.common.JwtTokenProvider
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -31,7 +32,11 @@ class JwtAuthenticationFilter(
                 val tokenResult: AccountJwtPayload = jwtTokenProvider.parseAuthorizationToken(token)
 
                 val userDetails: UserDetails =
-                    CustomUserDetails(CustomUserDto(userId= tokenResult.userId, role = tokenResult.role))
+                    CustomUserDetails(CustomUserDto(
+                        accountId= tokenResult.accountId,
+                        role = Role.valueOf(tokenResult.role),
+                        tenantKey = tokenResult.tenantKey
+                    ))
 
                 if (userDetails != null) {
                     val usernamePasswordAuthenticationToken =

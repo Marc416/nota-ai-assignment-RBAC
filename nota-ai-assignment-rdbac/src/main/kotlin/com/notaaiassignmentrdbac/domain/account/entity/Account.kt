@@ -8,10 +8,9 @@ class Account(
     val email: String,
     password: String,
     val tenantKey: String,
+    status: Status,
     @Enumerated(EnumType.STRING)
     val role: Role,
-    @Enumerated(EnumType.STRING)
-    val status: Status,
     val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
     @Id
@@ -20,15 +19,29 @@ class Account(
     var password: String = password
         private set
 
+    @Enumerated(EnumType.STRING)
+    var status: Status = status
+        private set
     var deletedAt: LocalDateTime? = null
 
-    companion object{
+    companion object {
         fun createActiveAccount(email: String, password: String, tenantKey: String, role: Role): Account {
-            return Account(email, password, tenantKey, role, Status.ACTIVE)
+            return Account(
+                email = email,
+                password = password,
+                tenantKey = tenantKey,
+                status = Status.ACTIVE,
+                role = role,
+            )
         }
     }
 
     fun changePassword(newPassword: String) {
         password = newPassword
+    }
+
+    fun delete() {
+        status = Status.INACTIVE
+        deletedAt = LocalDateTime.now()
     }
 }

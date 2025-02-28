@@ -1,5 +1,6 @@
 package com.notaaiassignmentrdbac.application.controller
 
+import com.notaaiassignmentrdbac.application.aop.CheckRole
 import com.notaaiassignmentrdbac.application.common.httpresponse.HttpApiResponse
 import com.notaaiassignmentrdbac.application.config.security.CustomUserDetails
 import com.notaaiassignmentrdbac.application.controller.dto.request.AccountSignInRequest
@@ -7,6 +8,7 @@ import com.notaaiassignmentrdbac.application.controller.dto.request.AccountSignu
 import com.notaaiassignmentrdbac.application.controller.dto.request.ChangePasswordRequest
 import com.notaaiassignmentrdbac.application.controller.dto.request.VerifyEmailRequest
 import com.notaaiassignmentrdbac.application.controller.dto.response.AccountSignInSuccessResponse
+import com.notaaiassignmentrdbac.domain.account.entity.Role
 import com.notaaiassignmentrdbac.domain.account.service.AccountCommandUseCase
 import com.notaaiassignmentrdbac.domain.account.service.EmailVerifyUseCase
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -64,15 +66,21 @@ class AccountCommandController(
         return HttpApiResponse.ok()
     }
 
-    /**
-     * 비밀번호 변경
-     */
     @PatchMapping("/password")
     fun changePassword(
         @RequestBody request: ChangePasswordRequest,
         @AuthenticationPrincipal userDetails: CustomUserDetails,
     ): HttpApiResponse<Unit> {
-        accountCommandUseCase.changePassword(userDetails.user.userId, request.newPassword)
+        accountCommandUseCase.changePassword(userDetails.user.accountId, request.newPassword)
+        return HttpApiResponse.ok()
+    }
+
+    @CheckRole(Role.ADMIN)
+    @DeleteMapping("/{accountId}")
+    fun deleteAccount(
+        @PathVariable accountId: Long,
+    ): HttpApiResponse<Unit> {
+        accountCommandUseCase.deleteAccount(accountId)
         return HttpApiResponse.ok()
     }
 }

@@ -1,5 +1,6 @@
 package com.notaaiassignmentrdbac.application.config.security
 
+import com.notaaiassignmentrdbac.domain.account.entity.Role
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -9,7 +10,7 @@ class CustomUserDetails(
 ) : UserDetails {
 
     override fun getAuthorities(): Collection<GrantedAuthority?> {
-        return listOf(SimpleGrantedAuthority("ROLE_${user.role}"))
+        return listOf(SimpleGrantedAuthority("ROLE_${user.role.name}"))
     }
 
 
@@ -18,13 +19,14 @@ class CustomUserDetails(
     }
 
     override fun getUsername(): String {
-        return user.userId.toString()
+        return user.accountId.toString()
     }
 
 
 }
 
 data class CustomUserDto(
-    val userId: Long,
-    val role: String,
+    val accountId: Long,
+    val role: Role,
+    val tenantKey: String,
 )

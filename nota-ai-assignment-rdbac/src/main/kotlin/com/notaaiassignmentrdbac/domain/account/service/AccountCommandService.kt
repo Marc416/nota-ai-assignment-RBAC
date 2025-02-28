@@ -27,14 +27,24 @@ class AccountCommandService(
 
     override fun signIn(email: String, tenantKey: String, password: String): AccountSignInSuccessResponse {
         val account = accountRepository.findByEmailAndTenantKeyAndPassword(email, password, tenantKey)
-        val accountPayload = AccountJwtPayload(account.id, account.role.name).toMap()
+        val accountPayload = AccountJwtPayload(
+            accountId = account.id,
+            tenantKey = account.tenantKey,
+            role = account.role.name
+        ).toMap()
         val token = jwtTokenProvider.generateToken(accountPayload, 1000*60*60*24)
         return AccountSignInSuccessResponse(token)
     }
 
-    override fun changePassword(userId:Long, newPassword: String) {
-        val account = accountRepository.findByUserId(userId)
+    override fun changePassword(accountId: Long, newPassword: String) {
+        val account = accountRepository.findByAccountId(accountId)
         account.changePassword(newPassword)
+        accountRepository.save(account)
+    }
+
+    override fun deleteAccount(accountId: Long) {
+        val account = accountRepository.findByAccountId(accountId)
+        account.delete()
         accountRepository.save(account)
     }
 }

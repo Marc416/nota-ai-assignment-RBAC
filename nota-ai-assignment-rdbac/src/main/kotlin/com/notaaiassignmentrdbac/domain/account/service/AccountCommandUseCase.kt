@@ -15,4 +15,5 @@ interface AccountCommandUseCase {
 
     fun signIn(email: String, password: String, tenantKey: String): AccountSignInSuccessResponse
     fun changePassword(userId: Long, newPassword: String)
+    fun deleteAccount(accountId: Long)
 }
