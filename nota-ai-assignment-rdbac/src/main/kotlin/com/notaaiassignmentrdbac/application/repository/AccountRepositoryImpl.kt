@@ -3,6 +3,7 @@ package com.notaaiassignmentrdbac.application.repository
 import com.notaaiassignmentrdbac.application.common.httpresponse.CodeEnum
 import com.notaaiassignmentrdbac.application.exception.ApplicationException
 import com.notaaiassignmentrdbac.domain.account.entity.Account
+import com.notaaiassignmentrdbac.domain.account.entity.Status
 import com.notaaiassignmentrdbac.domain.account.repository.AccountRepository
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
@@ -16,20 +17,19 @@ class AccountRepositoryImpl(
     }
 
     override fun findByUserId(userId: Long): Account {
-        return repository.findById(userId)
-            .orElseThrow {
-                ApplicationException(
-                    code = CodeEnum.FRS_001,
-                    message = "없는 유저 입니다."
-                )
-            }
+        return repository.findByIdAndStatus(userId, Status.ACTIVE)
+            ?: throw ApplicationException(
+                code = CodeEnum.FRS_001,
+                message = "없는 유저 입니다."
+            )
     }
 
     override fun findByEmailAndTenantKeyAndPassword(email: String, tenantKey: String, password: String): Account {
-        return repository.findByEmailAndTenantKeyAndPassword(
+        return repository.findByEmailAndTenantKeyAndPasswordAndStatus(
             email = email,
             tenantKey = tenantKey,
-            password = password
+            password = password,
+            status = Status.ACTIVE
         )
             ?: throw ApplicationException(
                 code = CodeEnum.FRS_001,
@@ -40,5 +40,11 @@ class AccountRepositoryImpl(
 }
 
 interface JpaAccountRepository : JpaRepository<Account, Long> {
-    fun findByEmailAndTenantKeyAndPassword(email: String, tenantKey: String, password: String): Account?
+    fun findByIdAndStatus(userId: Long, status: Status): Account?
+    fun findByEmailAndTenantKeyAndPasswordAndStatus(
+        email: String,
+        tenantKey: String,
+        password: String,
+        status: Status
+    ): Account?
 }

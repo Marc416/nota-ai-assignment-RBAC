@@ -28,7 +28,7 @@ class AccountCommandService(
     override fun signIn(email: String, tenantKey: String, password: String): AccountSignInSuccessResponse {
         val account = accountRepository.findByEmailAndTenantKeyAndPassword(email, password, tenantKey)
         val accountPayload = AccountJwtPayload(account.id, account.role.name).toMap()
-        val token = jwtTokenProvider.generateToken(accountPayload, 3000000)
+        val token = jwtTokenProvider.generateToken(accountPayload, 1000*60*60*24)
         return AccountSignInSuccessResponse(token)
     }
 
