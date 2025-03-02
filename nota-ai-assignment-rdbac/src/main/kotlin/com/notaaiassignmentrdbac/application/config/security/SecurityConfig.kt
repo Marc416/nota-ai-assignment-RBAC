@@ -16,7 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val securityAccessDeniedHandler: SecurityAccessDeniedHandler
+    private val securityAccessDeniedHandler: SecurityAccessDeniedHandler,
+    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
 ) {
 
     @Bean
@@ -50,7 +51,8 @@ class SecurityConfig(
         }
 
         http.exceptionHandling { exceptions ->
-            exceptions.accessDeniedHandler(securityAccessDeniedHandler)
+            exceptions.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(securityAccessDeniedHandler)
         }
         return http.build()
     }
