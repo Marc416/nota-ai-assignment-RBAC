@@ -7,16 +7,17 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: joonhee
     password: 1234
-
-logging:
-  level:
-    com.notaaiassignmentrdbac.application: DEBUG
-#    org.hibernate.SQL: DEBUG
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
-    show-sql: true
+
+logging:
+  level:
+    root: DEBUG
+    com.notaaiassignmentrdbac: DEBUG
+    org.springframework.jdbc.core: DEBUG
+    org.hibernate.SQL: DEBUG
 

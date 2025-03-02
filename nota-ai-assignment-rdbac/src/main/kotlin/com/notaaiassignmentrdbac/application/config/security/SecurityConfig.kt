@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val securityAccessDeniedHandler: SecurityAccessDeniedHandler,
+    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
 ) {
 
     @Bean
@@ -44,7 +46,13 @@ class SecurityConfig(
         // 권한 규칙 작성
         http.authorizeHttpRequests { httpRequest ->
             httpRequest.requestMatchers("/account/password/*").authenticated()
-            httpRequest.anyRequest().permitAll()
+            httpRequest.requestMatchers("/account/*").permitAll()
+            httpRequest.anyRequest().authenticated()
+        }
+
+        http.exceptionHandling { exceptions ->
+            exceptions.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(securityAccessDeniedHandler)
         }
         return http.build()
     }
