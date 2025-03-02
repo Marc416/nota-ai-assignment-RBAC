@@ -21,13 +21,12 @@ class ProjectRepositoryImpl(
     }
 
     override fun getById(projectId: Long): Project {
-        return repository.findById(projectId).orElseThrow {
-            throw ApplicationException(code = CodeEnum.FRS_001, message = "없는 프로젝트 입니다.")
-        }
+        return repository.findByIdAndStatus(projectId, listOf(ProjectStatus.ACTIVE))
+            ?: throw ApplicationException(code = CodeEnum.FRS_001, message = "없는 프로젝트 입니다.")
     }
 
     override fun findById(projectId: Long): Project? {
-        return repository.findById(projectId).orElse(null)
+        return repository.findByIdAndStatus(projectId, listOf(ProjectStatus.ACTIVE))
     }
 
     override fun getProjects(size: Int, nextCursor: String?): SliceContent<Project> {
@@ -69,4 +68,12 @@ interface JpaProjectRepository : JpaRepository<Project, Long> {
         """
     )
     fun getProjectsFromLastId(projectId: Long, status: List<ProjectStatus>, pageable: Pageable): List<Project>
+
+    @Query(
+        """
+        SELECT p FROM Project p
+        WHERE p.id = :projectId and p.status in :status
+        """
+    )
+    fun findByIdAndStatus(projectId: Long, status: List<ProjectStatus>): Project?
 }
