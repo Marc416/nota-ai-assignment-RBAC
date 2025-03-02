@@ -1,7 +1,10 @@
 package com.notaaiassignmentrdbac.domain.account.entity
 
 import jakarta.persistence.*
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDateTime
+import kotlin.jvm.Transient
 
 @Entity
 class Account(
@@ -12,6 +15,8 @@ class Account(
     @Enumerated(EnumType.STRING)
     val role: AccountRole,
     val createdAt: LocalDateTime = LocalDateTime.now(),
+    @Transient
+    val passwordEncoder: PasswordEncoder
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,19 +31,30 @@ class Account(
         private set
 
     companion object {
-        fun createActiveAccount(email: String, password: String, tenantKey: String, role: AccountRole): Account {
+        fun createActiveAccount(
+            email: String,
+            password: String,
+            tenantKey: String,
+            role: AccountRole,
+            passwordEncoder: PasswordEncoder
+        ): Account {
             return Account(
                 email = email,
-                password = password,
+                password = passwordEncoder.encode(password),
                 tenantKey = tenantKey,
                 status = AccountStatus.ACTIVE,
                 role = role,
+                passwordEncoder=passwordEncoder
             )
         }
     }
 
     fun changePassword(newPassword: String) {
-        password = newPassword
+        password = passwordEncoder.encode(newPassword)
+    }
+
+    fun isPasswordValid(inputPassword: String, passwordEncoder: PasswordEncoder): Boolean {
+        return passwordEncoder.matches(inputPassword, this.password)
     }
 
     fun delete() {

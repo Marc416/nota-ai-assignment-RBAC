@@ -1,4 +1,4 @@
-package com.notaaiassignmentrdbac.application.config.security
+package com.notaaiassignmentrdbac.application.common
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm

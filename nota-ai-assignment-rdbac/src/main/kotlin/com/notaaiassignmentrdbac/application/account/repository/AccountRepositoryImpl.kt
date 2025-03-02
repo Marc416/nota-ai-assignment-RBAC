@@ -24,11 +24,10 @@ class AccountRepositoryImpl(
             )
     }
 
-    override fun findByEmailAndTenantKeyAndPassword(email: String, tenantKey: String, password: String): Account {
-        return repository.findByEmailAndTenantKeyAndPasswordAndStatus(
+    override fun findByEmailAndTenantKey(email: String, tenantKey: String): Account {
+        return repository.findByEmailAndTenantKeyAndStatus(
             email = email,
             tenantKey = tenantKey,
-            password = password,
             status = AccountStatus.ACTIVE
         )
             ?: throw ApplicationException(
@@ -41,10 +40,9 @@ class AccountRepositoryImpl(
 
 interface JpaAccountRepository : JpaRepository<Account, Long> {
     fun findByIdAndStatus(userId: Long, status: AccountStatus): Account?
-    fun findByEmailAndTenantKeyAndPasswordAndStatus(
+    fun findByEmailAndTenantKeyAndStatus(
         email: String,
         tenantKey: String,
-        password: String,
         status: AccountStatus
     ): Account?
 }

@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.transaction.annotation.Transactional
 import kotlin.test.Test
 
@@ -40,6 +41,9 @@ class ProjectCommandControllerTest {
     @Autowired
     private lateinit var projectRepository: ProjectRepository
 
+    @Autowired
+    private lateinit var passwordEncoder: PasswordEncoder
+
     @Test
     fun `일반 유저는 프로젝트를 만들 수 없다`() {
         // Arrange
@@ -47,7 +51,8 @@ class ProjectCommandControllerTest {
             email = "test@email.com",
             password = "password",
             tenantKey = "tenantKey",
-            role = AccountRole.USER
+            role = AccountRole.USER,
+            passwordEncoder = passwordEncoder
         )
         val savedAccount = accountRepository.save(account)
         val userDetails = CustomUserDetails(
@@ -85,7 +90,8 @@ class ProjectCommandControllerTest {
                 email = "test@email.com",
                 password = "password",
                 tenantKey = "tenantKey",
-                role = AccountRole.ADMIN
+                role = AccountRole.ADMIN,
+                passwordEncoder = passwordEncoder
             )
             savedAdminAccount = accountRepository.save(account)
             userDetails = CustomUserDetails(
@@ -123,7 +129,8 @@ class ProjectCommandControllerTest {
                 email = "member@email.com",
                 password = "password",
                 tenantKey = "tenantKey",
-                role = AccountRole.USER
+                role = AccountRole.USER,
+                passwordEncoder = passwordEncoder
             )
             val savedMember = accountRepository.save(member)
 
@@ -167,7 +174,8 @@ class ProjectCommandControllerTest {
                 email = "test@email.com",
                 password = "password",
                 tenantKey = "tenantKey",
-                role = AccountRole.ADMIN
+                role = AccountRole.ADMIN,
+                passwordEncoder = passwordEncoder
             )
             savedAdminAccount = accountRepository.save(adminAccount)
 
@@ -176,7 +184,8 @@ class ProjectCommandControllerTest {
                 email = "owner@email.com",
                 password = "password",
                 tenantKey = "tenantKey",
-                role = AccountRole.USER
+                role = AccountRole.USER,
+                passwordEncoder = passwordEncoder
             )
             invitedProjectOwnerAccount = accountRepository.save(newProjectOwnerAccount)
 
@@ -255,7 +264,8 @@ class ProjectCommandControllerTest {
                 email = "test@email.com",
                 password = "password",
                 tenantKey = "tenantKey",
-                role = AccountRole.ADMIN
+                role = AccountRole.ADMIN,
+                passwordEncoder = passwordEncoder
             )
             savedAdminAccount = accountRepository.save(adminAccount)
 
@@ -264,7 +274,8 @@ class ProjectCommandControllerTest {
                 email = "editor@email.com",
                 password = "password",
                 tenantKey = "tenantKey",
-                role = AccountRole.USER
+                role = AccountRole.USER,
+                passwordEncoder = passwordEncoder
             )
             invitedProjectEditorAccount = accountRepository.save(newProjectEditorAccount)
 

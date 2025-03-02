@@ -40,8 +40,8 @@ class AccountCommandController(
     ): HttpApiResponse<AccountSignInSuccessResponse> {
         val response = accountCommandUseCase.signIn(
             email = requestBody.email,
-            password = requestBody.password,
-            tenantKey = requestBody.tenantKey
+            tenantKey = requestBody.tenantKey,
+            password = requestBody.password
         )
         return HttpApiResponse.of(response)
     }

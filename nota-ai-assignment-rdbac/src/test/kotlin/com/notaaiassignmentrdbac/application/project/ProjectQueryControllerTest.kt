@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.transaction.annotation.Transactional
 import kotlin.test.Test
 
@@ -36,6 +37,9 @@ class ProjectQueryControllerTest {
 
     @Autowired
     private lateinit var projectRepository: ProjectRepository
+
+    @Autowired
+    private lateinit var passwordEncoder: PasswordEncoder
 
     @Nested
     inner class VIEWER_권한테스트 {
@@ -55,7 +59,8 @@ class ProjectQueryControllerTest {
                 email = "test@email.com",
                 password = "password",
                 tenantKey = "tenantKey",
-                role = AccountRole.ADMIN
+                role = AccountRole.ADMIN,
+                passwordEncoder = passwordEncoder
             )
             savedAdminAccount = accountRepository.save(adminAccount)
 
@@ -64,7 +69,8 @@ class ProjectQueryControllerTest {
                 email = "viewer@email.com",
                 password = "password",
                 tenantKey = "tenantKey",
-                role = AccountRole.USER
+                role = AccountRole.USER,
+                passwordEncoder = passwordEncoder
             )
             invitedProjectViewerAccount = accountRepository.save(newProjectEditorAccount)
 
