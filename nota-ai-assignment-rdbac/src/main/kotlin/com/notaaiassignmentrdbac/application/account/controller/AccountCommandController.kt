@@ -8,6 +8,7 @@ import com.notaaiassignmentrdbac.application.account.dto.request.AccountSignupRe
 import com.notaaiassignmentrdbac.application.account.dto.request.ChangePasswordRequest
 import com.notaaiassignmentrdbac.application.account.dto.request.VerifyEmailRequest
 import com.notaaiassignmentrdbac.application.account.dto.response.AccountSignInSuccessResponse
+import com.notaaiassignmentrdbac.application.account.dto.response.AccountSignupSuccessResponse
 import com.notaaiassignmentrdbac.domain.account.entity.AccountRole
 import com.notaaiassignmentrdbac.domain.account.service.AccountCommandUseCase
 import com.notaaiassignmentrdbac.domain.account.service.EmailVerifyUseCase
@@ -23,13 +24,14 @@ class AccountCommandController(
     @PostMapping("/signup")
     fun signUp(
         @RequestBody requestBody: AccountSignupRequest
-    ) {
-        accountCommandUseCase.signUp(
+    ) :HttpApiResponse<AccountSignupSuccessResponse> {
+        val response = accountCommandUseCase.signUp(
             email = requestBody.email,
             password = requestBody.password,
             tenantKey = requestBody.tenantKey,
             role = requestBody.role
         )
+        return HttpApiResponse.of(response)
     }
 
     @PostMapping("/signin")

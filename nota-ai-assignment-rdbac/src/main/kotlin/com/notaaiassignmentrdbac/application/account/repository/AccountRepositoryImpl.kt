@@ -16,8 +16,8 @@ class AccountRepositoryImpl(
         return repository.save(account)
     }
 
-    override fun findByAccountId(userId: Long): Account {
-        return repository.findByIdAndStatus(userId, AccountStatus.ACTIVE)
+    override fun findByAccountId(accountId: Long): Account {
+        return repository.findByIdAndStatus(accountId, AccountStatus.ACTIVE)
             ?: throw ApplicationException(
                 code = CodeEnum.FRS_001,
                 message = "없는 유저 입니다."
