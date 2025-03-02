@@ -1,10 +1,10 @@
 package com.notaaiassignmentrdbac.domain.account.service
 
-import com.notaaiassignmentrdbac.application.controller.dto.response.AccountSignInSuccessResponse
-import com.notaaiassignmentrdbac.application.controller.dto.response.AccountSignupSuccessResponse
+import com.notaaiassignmentrdbac.application.account.dto.response.AccountSignInSuccessResponse
+import com.notaaiassignmentrdbac.application.account.dto.response.AccountSignupSuccessResponse
 import com.notaaiassignmentrdbac.domain.account.dto.AccountJwtPayload
 import com.notaaiassignmentrdbac.domain.account.entity.Account
-import com.notaaiassignmentrdbac.domain.account.entity.Role
+import com.notaaiassignmentrdbac.domain.account.entity.AccountRole
 import com.notaaiassignmentrdbac.domain.account.repository.AccountRepository
 import com.notaaiassignmentrdbac.domain.common.JwtTokenProvider
 import org.springframework.stereotype.Service
@@ -18,7 +18,7 @@ class AccountCommandService(
         email: String,
         password: String,
         tenantKey: String,
-        role: Role,
+        role: AccountRole,
     ): AccountSignupSuccessResponse {
         val account = Account.createActiveAccount(email, password, tenantKey, role)
         val createdAccount = accountRepository.save(account)

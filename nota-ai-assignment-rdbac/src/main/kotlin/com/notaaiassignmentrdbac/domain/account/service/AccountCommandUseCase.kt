@@ -1,8 +1,8 @@
 package com.notaaiassignmentrdbac.domain.account.service
 
-import com.notaaiassignmentrdbac.application.controller.dto.response.AccountSignInSuccessResponse
-import com.notaaiassignmentrdbac.application.controller.dto.response.AccountSignupSuccessResponse
-import com.notaaiassignmentrdbac.domain.account.entity.Role
+import com.notaaiassignmentrdbac.application.account.dto.response.AccountSignInSuccessResponse
+import com.notaaiassignmentrdbac.application.account.dto.response.AccountSignupSuccessResponse
+import com.notaaiassignmentrdbac.domain.account.entity.AccountRole
 
 interface AccountCommandUseCase {
 
@@ -10,7 +10,7 @@ interface AccountCommandUseCase {
         email: String,
         password: String,
         tenantKey: String,
-        role: Role,
+        role: AccountRole,
     ): AccountSignupSuccessResponse
 
     fun signIn(email: String, password: String, tenantKey: String): AccountSignInSuccessResponse

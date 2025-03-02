@@ -8,9 +8,9 @@ class Account(
     val email: String,
     password: String,
     val tenantKey: String,
-    status: Status,
+    status: AccountStatus,
     @Enumerated(EnumType.STRING)
-    val role: Role,
+    val role: AccountRole,
     val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
     @Id
@@ -20,17 +20,18 @@ class Account(
         private set
 
     @Enumerated(EnumType.STRING)
-    var status: Status = status
+    var status: AccountStatus = status
         private set
     var deletedAt: LocalDateTime? = null
+        private set
 
     companion object {
-        fun createActiveAccount(email: String, password: String, tenantKey: String, role: Role): Account {
+        fun createActiveAccount(email: String, password: String, tenantKey: String, role: AccountRole): Account {
             return Account(
                 email = email,
                 password = password,
                 tenantKey = tenantKey,
-                status = Status.ACTIVE,
+                status = AccountStatus.ACTIVE,
                 role = role,
             )
         }
@@ -41,7 +42,7 @@ class Account(
     }
 
     fun delete() {
-        status = Status.INACTIVE
+        status = AccountStatus.INACTIVE
         deletedAt = LocalDateTime.now()
     }
 }

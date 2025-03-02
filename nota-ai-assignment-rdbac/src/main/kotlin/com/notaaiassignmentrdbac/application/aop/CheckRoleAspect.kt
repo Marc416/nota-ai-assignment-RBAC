@@ -3,7 +3,7 @@ package com.notaaiassignmentrdbac.application.aop
 import com.notaaiassignmentrdbac.application.common.httpresponse.CodeEnum
 import com.notaaiassignmentrdbac.application.config.security.CustomUserDetails
 import com.notaaiassignmentrdbac.application.exception.ApplicationException
-import com.notaaiassignmentrdbac.domain.account.entity.Role
+import com.notaaiassignmentrdbac.domain.account.entity.AccountRole
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -18,7 +18,7 @@ class CheckRoleAspect {
     @Around("@annotation(CheckRole) && @annotation(checkRole)")
     @Throws(Throwable::class)
     fun checkUserRole(joinPoint: ProceedingJoinPoint, checkRole: CheckRole): Any {
-        val requiredRole: Role = checkRole.value
+        val requiredRole: AccountRole = checkRole.value
         val authentication: Authentication? = SecurityContextHolder.getContext().authentication
         val customUserDetails = authentication?.principal as? CustomUserDetails
 
@@ -29,7 +29,7 @@ class CheckRoleAspect {
         return joinPoint.proceed()
     }
 
-    private fun checkAuthority(requiredRole: Role, customUserDetails: CustomUserDetails): Boolean {
+    private fun checkAuthority(requiredRole: AccountRole, customUserDetails: CustomUserDetails): Boolean {
         return requiredRole in customUserDetails.user.role.getAllRoles()
     }
 }

@@ -1,6 +1,6 @@
 package com.notaaiassignmentrdbac.application.config.security
 
-import com.notaaiassignmentrdbac.domain.account.entity.Role
+import com.notaaiassignmentrdbac.domain.account.entity.AccountRole
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -27,6 +27,6 @@ class CustomUserDetails(
 
 data class CustomUserDto(
     val accountId: Long,
-    val role: Role,
+    val role: AccountRole,
     val tenantKey: String,
 )
