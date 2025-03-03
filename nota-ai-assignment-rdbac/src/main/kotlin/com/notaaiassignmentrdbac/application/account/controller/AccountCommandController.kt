@@ -1,17 +1,15 @@
 package com.notaaiassignmentrdbac.application.account.controller
 
+import com.notaaiassignmentrdbac.application.account.dto.request.*
 import com.notaaiassignmentrdbac.application.aop.CheckRole
 import com.notaaiassignmentrdbac.application.common.httpresponse.HttpApiResponse
 import com.notaaiassignmentrdbac.application.config.security.CustomUserDetails
-import com.notaaiassignmentrdbac.application.account.dto.request.AccountSignInRequest
-import com.notaaiassignmentrdbac.application.account.dto.request.AccountSignupRequest
-import com.notaaiassignmentrdbac.application.account.dto.request.ChangePasswordRequest
-import com.notaaiassignmentrdbac.application.account.dto.request.VerifyEmailRequest
 import com.notaaiassignmentrdbac.application.account.dto.response.AccountSignInSuccessResponse
 import com.notaaiassignmentrdbac.application.account.dto.response.AccountSignupSuccessResponse
 import com.notaaiassignmentrdbac.domain.account.entity.AccountRole
 import com.notaaiassignmentrdbac.domain.account.service.AccountCommandUseCase
 import com.notaaiassignmentrdbac.domain.account.service.EmailVerifyUseCase
+import jakarta.validation.Valid
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
@@ -23,7 +21,7 @@ class AccountCommandController(
 ) {
     @PostMapping("/signup")
     fun signUp(
-        @RequestBody requestBody: AccountSignupRequest
+        @Valid @RequestBody requestBody: AccountSignupRequest
     ) :HttpApiResponse<AccountSignupSuccessResponse> {
         val response = accountCommandUseCase.signUp(
             email = requestBody.email,
@@ -36,7 +34,7 @@ class AccountCommandController(
 
     @PostMapping("/signin")
     fun signIn(
-        @RequestBody requestBody: AccountSignInRequest
+        @Valid @RequestBody requestBody: AccountSignInRequest
     ): HttpApiResponse<AccountSignInSuccessResponse> {
         val response = accountCommandUseCase.signIn(
             email = requestBody.email,
@@ -51,9 +49,9 @@ class AccountCommandController(
      */
     @PostMapping("/verify/email")
     fun sendVerifyCodeToEmail(
-        @RequestBody email: String
+        @Valid @RequestBody requestBody: EmailVerifyRequest
     ): HttpApiResponse<Unit> {
-        emailVerifyUseCase.sendVerifyCodeToEmail(email)
+        emailVerifyUseCase.sendVerifyCodeToEmail(requestBody.email)
         return HttpApiResponse.ok()
     }
 
@@ -62,7 +60,7 @@ class AccountCommandController(
      */
     @PostMapping("/verify/email/code")
     fun verifyEmailCode(
-        @RequestBody requestBody: VerifyEmailRequest,
+        @Valid @RequestBody requestBody: VerifyEmailRequest,
     ): HttpApiResponse<Unit> {
         emailVerifyUseCase.verifyEmailCode(requestBody.email, requestBody.code)
         return HttpApiResponse.ok()
@@ -70,7 +68,7 @@ class AccountCommandController(
 
     @PatchMapping("/password")
     fun changePassword(
-        @RequestBody request: ChangePasswordRequest,
+        @Valid @RequestBody request: ChangePasswordRequest,
         @AuthenticationPrincipal userDetails: CustomUserDetails,
     ): HttpApiResponse<Unit> {
         accountCommandUseCase.changePassword(userDetails.user.accountId, request.newPassword)

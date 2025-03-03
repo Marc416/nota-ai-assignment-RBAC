@@ -1,8 +1,9 @@
-package com.notaaiassignmentrdbac.application.config.security
+package com.notaaiassignmentrdbac.application.config
 
 import com.notaaiassignmentrdbac.application.common.httpresponse.CodeEnum
 import com.notaaiassignmentrdbac.application.common.httpresponse.HttpApiResponse
 import com.notaaiassignmentrdbac.application.exception.ApplicationException
+import jakarta.validation.ValidationException
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -43,18 +44,20 @@ class ControllerExceptionHandler {
             )
     }
 
-//    @ExceptionHandler(ValidationException::class)
-//    fun handleValidationException(e: ValidationException): ResponseEntity<HttpApiResponse<*>> {
-//        logger.error { "Validation Exception occurred. message=${e.message}" }
-//        logger.error { e.stackTraceToString() }
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//            .body(
-//                HttpApiResponse.fromExceptionMessage(
-//                    code = CodeEnum.FRS_003,
-//                    message = CodeEnum.FRS_003.description + "| " + e.message
-//                )
-//            )
-//    }
+    @ExceptionHandler(ValidationException::class)
+    fun handleValidationException(e: ValidationException): ResponseEntity<HttpApiResponse<*>> {
+        logger.error { "Validation Exception occurred. message=${e.message}" }
+        logger.error { e.stackTraceToString() }
+        val errorMessage = e.message?.takeIf { it.isNotBlank() } ?: CodeEnum.FRS_003.description
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                HttpApiResponse.fromExceptionMessage(
+                    code = CodeEnum.FRS_003,
+                    message = "$errorMessage | "
+                )
+            )
+    }
 
     @ExceptionHandler(MissingServletRequestParameterException::class)
     fun handleMissingServletRequestParameterException(e: MissingServletRequestParameterException): ResponseEntity<HttpApiResponse<*>> {
