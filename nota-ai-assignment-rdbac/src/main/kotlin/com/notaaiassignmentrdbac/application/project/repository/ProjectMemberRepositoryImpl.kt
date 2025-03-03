@@ -59,13 +59,14 @@ class ProjectMemberRepositoryImpl(
         val sql = """
             UPDATE project_member
             SET role = ?, deleted_at = ?
-            WHERE id = ?
+            WHERE account_id = ? and project_id = ?
         """
         val batchArgs = members.map { projectMember ->
             arrayOf(
                 projectMember.role.name,
                 projectMember.deletedAt,
-                projectMember.id
+                projectMember.accountId,
+                projectMember.project.id
             )
         }
         jdbcTemplate.batchUpdate(sql, batchArgs)
@@ -73,10 +74,10 @@ class ProjectMemberRepositoryImpl(
     }
 
     override fun findByAccountIdAndProjectId(accountId: Long, projectId: Long): ProjectMember? {
-        return repository.findByAccountIdAndProjectId(accountId, projectId)
+        return repository.findByAccountIdAndProjectIdAndDeletedAtIsNull(accountId, projectId)
     }
 }
 
 interface JpaProjectMemberRepository: JpaRepository<ProjectMember, Long> {
-    fun findByAccountIdAndProjectId(accountId: Long, projectId: Long): ProjectMember?
+    fun findByAccountIdAndProjectIdAndDeletedAtIsNull(accountId: Long, projectId: Long): ProjectMember?
 }

@@ -58,10 +58,13 @@ class SecurityConfig(
             httpRequest.anyRequest().authenticated()
         }
 
+
         http.exceptionHandling { exceptions ->
             exceptions.authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(securityAccessDeniedHandler)
         }
+
+
         return http.build()
     }
 

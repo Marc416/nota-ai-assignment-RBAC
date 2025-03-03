@@ -30,6 +30,9 @@ class ProjectCommandService(
 
     override fun addMember(projectId: Long, memberRequests: List<MemberRequest>): ProjectResponse {
         val project = projectRepository.getById(projectId)
+        memberRequests.forEach { memberRequest ->
+            project.addMember(memberRequest.accountId, memberRequest.role)
+        }
         val members = memberRequests.map { memberRequest ->
             ProjectMember(memberRequest.accountId, project, role = memberRequest.role)
         }
@@ -37,13 +40,13 @@ class ProjectCommandService(
         return ProjectResponse(projectId = projectId)
     }
 
-    override fun removeMember(projectId: Long, memberRequests: List<MemberRequest>): ProjectResponse {
+    override fun removeMember(projectId: Long, memberIds: List<Long>): ProjectResponse {
         val project = projectRepository.getById(projectId)
         val memberMap = project.members.associateBy { it.accountId }
-        val members = memberRequests.map { memberRequest ->
-            memberMap[memberRequest.accountId] ?: throw ApplicationException(
+        val members = memberIds.map { memberRequest ->
+            memberMap[memberRequest] ?: throw ApplicationException(
                 code=CodeEnum.FRS_001,
-                message = "Id: ${memberRequest.accountId} 는 멤버가 아닙니다."
+                message = "Id: ${memberRequest} 는 멤버가 아닙니다."
             )
         }
 

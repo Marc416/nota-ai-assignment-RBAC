@@ -4,7 +4,9 @@ import com.notaaiassignmentrdbac.application.config.security.CustomUserDetails
 import com.notaaiassignmentrdbac.application.config.security.CustomUserDto
 import com.notaaiassignmentrdbac.application.exception.ApplicationException
 import com.notaaiassignmentrdbac.application.project.controller.ProjectCommandController
+import com.notaaiassignmentrdbac.application.project.dto.request.ProjectAddMemberRequest
 import com.notaaiassignmentrdbac.application.project.dto.request.ProjectCreateRequest
+import com.notaaiassignmentrdbac.application.project.dto.request.ProjectRemoveMemberRequest
 import com.notaaiassignmentrdbac.application.project.dto.request.ProjectUpdateRequest
 import com.notaaiassignmentrdbac.domain.account.entity.Account
 import com.notaaiassignmentrdbac.domain.account.entity.AccountRole
@@ -243,6 +245,88 @@ class ProjectCommandControllerTest {
             )
             // Assert
             assertThatThrownBy { projectRepository.getById(savedProject.id) }.isInstanceOf(ApplicationException::class.java)
+        }
+
+        @Test
+        fun `PROJECT_OWNER는 멤버를 추가할 수 있다`() {
+            // Arrange
+            val member = Account.createActiveAccount(
+                email = "member@email.com",
+                password = "password",
+                tenantKey = "tenantKey",
+                role = AccountRole.USER,
+                passwordEncoder = passwordEncoder
+            )
+            val savedMember = accountRepository.save(member)
+
+            // Action
+            projectCommandController.addMember(
+                userDetails = userDetails,
+                projectId = savedProject.id,
+                request = ProjectAddMemberRequest(
+                    memberRequests = listOf(
+                        MemberRequest(
+                            accountId = savedMember.id,
+                            role = ProjectRole.VIEWER
+                        )
+                    )
+                )
+            )
+
+            // Assert
+            val projectMember = projectMemberRepository.findByAccountIdAndProjectId(
+                accountId = savedMember.id,
+                projectId = savedProject.id
+            )
+            assertThat(projectMember).isNotNull()
+        }
+
+        @Test
+        fun `PROJECT_OWNER는 멤버를 제거 할 수 있다`() {
+            // Arrange
+            val member = Account.createActiveAccount(
+                email = "member@email.com",
+                password = "password",
+                tenantKey = "tenantKey",
+                role = AccountRole.USER,
+                passwordEncoder = passwordEncoder
+            )
+            val savedMember = accountRepository.save(member)
+
+            projectCommandController.addMember(
+                userDetails = userDetails,
+                projectId = savedProject.id,
+                request = ProjectAddMemberRequest(
+                    memberRequests = listOf(
+                        MemberRequest(
+                            accountId = savedMember.id,
+                            role = ProjectRole.VIEWER
+                        )
+                    )
+                )
+            )
+            val projectMember = projectMemberRepository.findByAccountIdAndProjectId(
+                accountId = savedMember.id,
+                projectId = savedProject.id
+            )
+            assertThat(projectMember).isNotNull()
+
+            // Action
+            projectCommandController.removeMember(
+                userDetails = userDetails,
+                projectId = savedProject.id,
+                request = ProjectRemoveMemberRequest(
+                    memberIds = listOf(
+                        savedMember.id
+                    )
+                )
+            )
+            // Assert
+            val removedMember = projectMemberRepository.findByAccountIdAndProjectId(
+                accountId = savedMember.id,
+                projectId = savedProject.id
+            )
+            assertThat(removedMember).isNull()
         }
     }
 

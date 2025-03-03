@@ -1,11 +1,18 @@
 package com.notaaiassignmentrdbac.application.config.security
 
+import com.notaaiassignmentrdbac.domain.account.dto.AccountJwtPayload
+import com.notaaiassignmentrdbac.domain.account.entity.AccountRole
 import com.notaaiassignmentrdbac.domain.common.JwtTokenProvider
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.AuthenticationException
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -14,6 +21,13 @@ import org.springframework.web.filter.OncePerRequestFilter
 class JwtAuthenticationFilter(
     private val jwtTokenProvider: JwtTokenProvider
 ) : OncePerRequestFilter() {
+
+    private val excludedPaths = listOf("/account/signup", "/account/signin")
+    private val requestMatchers: List<RequestMatcher> = excludedPaths.map { AntPathRequestMatcher(it) }
+
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        return requestMatchers.any { it.matches(request) }
+    }
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -28,7 +42,22 @@ class JwtAuthenticationFilter(
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             val token = authorizationHeader.substring(7)
-            jwtTokenProvider.validateToken(token)
+            if (jwtTokenProvider.validateToken(token)) {
+                val tokenResult: AccountJwtPayload = jwtTokenProvider.parseAuthorizationToken(token)
+
+                val userDetails: UserDetails =
+                    CustomUserDetails(CustomUserDto(
+                        accountId= tokenResult.accountId,
+                        role = AccountRole.valueOf(tokenResult.role),
+                        tenantKey = tokenResult.tenantKey
+                    ))
+
+                if (userDetails != null) {
+                    val usernamePasswordAuthenticationToken =
+                        UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+                    SecurityContextHolder.getContext().authentication = usernamePasswordAuthenticationToken
+                }
+            }
         }
         filterChain.doFilter(request, response)
     }

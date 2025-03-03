@@ -49,13 +49,13 @@ class Project(
     }
 
     fun addMember(accountId: Long, role: ProjectRole = ProjectRole.VIEWER) {
-        val member = ProjectMember(accountId, this, role = role) // ✅ 여기서 project 설정!
-        _members.add(member)  // 메모리 상에서도 추가
+        val member = ProjectMember(accountId, this, role = role)
+        _members.add(member)
     }
 
     fun removeMember(member: ProjectMember) {
-        _members.remove(member) // ✅ 메모리에서 제거
-        member.removeFromProject() // ✅ DB에서도 반영
+        _members.remove(member)
+        member.removeFromProject()
     }
 
     fun delete() {

@@ -5,6 +5,7 @@ import com.notaaiassignmentrdbac.application.common.httpresponse.HttpApiResponse
 import com.notaaiassignmentrdbac.application.config.security.CustomUserDetails
 import com.notaaiassignmentrdbac.application.project.dto.request.ProjectAddMemberRequest
 import com.notaaiassignmentrdbac.application.project.dto.request.ProjectCreateRequest
+import com.notaaiassignmentrdbac.application.project.dto.request.ProjectRemoveMemberRequest
 import com.notaaiassignmentrdbac.application.project.dto.request.ProjectUpdateRequest
 import com.notaaiassignmentrdbac.domain.project.dto.response.ProjectResponse
 import com.notaaiassignmentrdbac.domain.project.entity.ProjectRole
@@ -73,11 +74,11 @@ class ProjectCommandController(
     fun removeMember(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @PathVariable projectId: Long,
-        @RequestBody request: ProjectAddMemberRequest
+        @RequestBody request: ProjectRemoveMemberRequest
     ): HttpApiResponse<ProjectResponse> {
         val response = projectCommandUseCase.removeMember(
             projectId = projectId,
-            memberRequests = request.memberRequests
+            memberIds = request.memberIds
         )
         return HttpApiResponse.of(response)
     }
