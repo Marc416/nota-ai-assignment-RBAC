@@ -13,7 +13,7 @@ interface AccountCommandUseCase {
         role: AccountRole,
     ): AccountSignupSuccessResponse
 
-    fun signIn(email: String, password: String, tenantKey: String): AccountSignInSuccessResponse
+    fun signIn(email: String, tenantKey: String, password: String,): AccountSignInSuccessResponse
     fun changePassword(userId: Long, newPassword: String)
     fun deleteAccount(accountId: Long)
 }

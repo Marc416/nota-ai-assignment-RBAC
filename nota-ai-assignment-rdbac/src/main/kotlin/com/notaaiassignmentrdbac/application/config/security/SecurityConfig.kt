@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configurers.FormLoginC
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
@@ -19,6 +21,12 @@ class SecurityConfig(
     private val securityAccessDeniedHandler: SecurityAccessDeniedHandler,
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
 ) {
+
+    // 비밀번호 암호화
+    @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return BCryptPasswordEncoder()
+    }
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
@@ -47,13 +55,21 @@ class SecurityConfig(
         http.authorizeHttpRequests { httpRequest ->
             httpRequest.requestMatchers("/account/password/*").authenticated()
             httpRequest.requestMatchers("/account/*").permitAll()
+            httpRequest.requestMatchers(
+                "/swagger/**",
+                "/swagger-ui/**",
+                "/api-docs/**"
+            ).permitAll()
             httpRequest.anyRequest().authenticated()
         }
+
 
         http.exceptionHandling { exceptions ->
             exceptions.authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(securityAccessDeniedHandler)
         }
+
+
         return http.build()
     }
 

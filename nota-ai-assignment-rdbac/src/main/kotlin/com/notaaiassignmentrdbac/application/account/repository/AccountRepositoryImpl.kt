@@ -16,19 +16,18 @@ class AccountRepositoryImpl(
         return repository.save(account)
     }
 
-    override fun findByAccountId(userId: Long): Account {
-        return repository.findByIdAndStatus(userId, AccountStatus.ACTIVE)
+    override fun findByAccountId(accountId: Long): Account {
+        return repository.findByIdAndStatus(accountId, AccountStatus.ACTIVE)
             ?: throw ApplicationException(
                 code = CodeEnum.FRS_001,
                 message = "없는 유저 입니다."
             )
     }
 
-    override fun findByEmailAndTenantKeyAndPassword(email: String, tenantKey: String, password: String): Account {
-        return repository.findByEmailAndTenantKeyAndPasswordAndStatus(
+    override fun findByEmailAndTenantKey(email: String, tenantKey: String): Account {
+        return repository.findByEmailAndTenantKeyAndStatus(
             email = email,
             tenantKey = tenantKey,
-            password = password,
             status = AccountStatus.ACTIVE
         )
             ?: throw ApplicationException(
@@ -41,10 +40,9 @@ class AccountRepositoryImpl(
 
 interface JpaAccountRepository : JpaRepository<Account, Long> {
     fun findByIdAndStatus(userId: Long, status: AccountStatus): Account?
-    fun findByEmailAndTenantKeyAndPasswordAndStatus(
+    fun findByEmailAndTenantKeyAndStatus(
         email: String,
         tenantKey: String,
-        password: String,
         status: AccountStatus
     ): Account?
 }
