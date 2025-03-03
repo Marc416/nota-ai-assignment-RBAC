@@ -55,6 +55,11 @@ class SecurityConfig(
         http.authorizeHttpRequests { httpRequest ->
             httpRequest.requestMatchers("/account/password/*").authenticated()
             httpRequest.requestMatchers("/account/*").permitAll()
+            httpRequest.requestMatchers(
+                "/swagger/**",
+                "/swagger-ui/**",
+                "/api-docs/**"
+            ).permitAll()
             httpRequest.anyRequest().authenticated()
         }
 

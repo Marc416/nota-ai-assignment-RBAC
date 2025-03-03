@@ -22,7 +22,15 @@ class JwtAuthenticationFilter(
     private val jwtTokenProvider: JwtTokenProvider
 ) : OncePerRequestFilter() {
 
-    private val excludedPaths = listOf("/account/signup", "/account/signin")
+    private val excludedPaths = listOf(
+        "/account/signup",
+        "/account/signin",
+        "/account/verify/**",
+        "/account/password",
+        "/swagger/**",
+        "/swagger-ui/**",
+        "/api-docs/**"
+    )
     private val requestMatchers: List<RequestMatcher> = excludedPaths.map { AntPathRequestMatcher(it) }
 
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
