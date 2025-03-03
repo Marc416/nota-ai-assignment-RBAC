@@ -54,7 +54,7 @@ class SecurityConfig(
         // 권한 규칙 작성
         http.authorizeHttpRequests { httpRequest ->
             httpRequest.requestMatchers("/account/password/*").authenticated()
-            httpRequest.requestMatchers("/account/*").permitAll()
+            httpRequest.requestMatchers("/account/**").permitAll()
             httpRequest.requestMatchers(
                 "/swagger/**",
                 "/swagger-ui/**",
