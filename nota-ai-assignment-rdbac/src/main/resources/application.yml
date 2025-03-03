@@ -16,8 +16,7 @@ spring:
 
 logging:
   level:
-    root: DEBUG
-    com.notaaiassignmentrdbac: DEBUG
+#    root: DEBUG
     org.springframework.jdbc.core: DEBUG
     org.hibernate.SQL: DEBUG
 
